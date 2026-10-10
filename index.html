@@ -200,13 +200,13 @@ body.dark-mode .tag{color:#fff}
   <section id="trackStep" class="drawer-label student-step">
     <h2>مرحباً بك! 👋</h2>
     <div class="level-picker">
-      <button class="btn" data-k="track" data-v="عام" data-n="deptStep">نظام عام</button>
-      <button class="btn" data-k="track" data-v="خاص" data-n="deptStep">نظام خاص (برامج)</button>
+      <button class="btn" data-k="track" data-v="عام" data-n="deptStep">الأقسام العامة</button>
+      <button class="btn" data-k="track" data-v="خاص" data-n="deptStep">البرامج الخاصة</button>
     </div>
   </section>
   <section id="deptStep" class="drawer-label student-step" hidden>
     <div class="chosen-level-bar"><span>النظام: <strong id="lblDept"></strong></span><button class="btn" onclick="resetTo('trackStep')">تغيير</button></div>
-    <h2>اختار قسمك</h2>
+    <h2>اختار القسم / البرنامج</h2>
     <p style="font-size:12px;color:#888">اختار قسمك. المواد المشتركة بين الأقسام بتظهر لكل الطلاب.</p>
     <div id="deptBtns" class="level-picker"></div>
   </section>
@@ -283,7 +283,7 @@ body.dark-mode .tag{color:#fff}
     <div class="acard">
       <h4>1) المسار</h4>
       <div class="form-grid">
-        <select id="addTrack" class="form-select"><option value="عام">نظام عام</option><option value="خاص">نظام خاص (برامج)</option></select>
+        <select id="addTrack" class="form-select"><option value="عام">الأقسام العامة</option><option value="خاص">البرامج الخاصة</option></select>
         <select id="addDept" class="form-select"></select>
         <select id="addLevel" class="form-select"></select>
         <select id="addSemester" class="form-select"><option value="الفصل الأول">الفصل الأول</option><option value="الفصل الثاني">الفصل الثاني</option></select>
@@ -372,7 +372,11 @@ body.dark-mode .tag{color:#fff}
 </div></div>
 
 <script>
-const DEPTS=['الرياضيات','الفيزياء','الكيمياء','النبات والميكروبيولوجي','علم الحيوان','علم الحشرات','الجيولوجيا'];
+const DEPT_GEN=['الرياضيات','الإحصاء','علوم الكمبيوتر','الفيزياء','الكيمياء','الجيولوجيا','الجيوفيزياء','علم النبات','الأحياء الدقيقة','علم الحيوان','علم الحشرات','علم مصائد الأسماك'];
+const DEPT_SPC=['جيولوجيا البترول','بيوتكنولوجيا النبات والميكروبيولوجي','الكيمياء الصناعية التطبيقية','علوم المواد والنانوتكنولوجي','الفيزياء الإشعاعية الطبية'];
+const DEPTS=DEPT_GEN.concat(DEPT_SPC);
+const deptsOf=t=>t==='خاص'?DEPT_SPC:DEPT_GEN;
+const deptBtnsHtml=t=>deptsOf(t).map(d=>`<button class="btn" data-k="dept" data-v="${esc(d)}" data-n="levelStep">${esc(d)}</button>`).join('');
 const LEVELS=['الفرقة الأولى','الفرقة الثانية','الفرقة الثالثة','الفرقة الرابعة'];
 const TYPES=['محاضرات','سكاشن','ملخصات','امتحانات سابقة','تكليفات'];
 const WEEKS=['عام',...Array.from({length:16},(_,i)=>'الأسبوع '+(i+1)),'ميدتيرم','فاينال'];
@@ -411,9 +415,10 @@ if(ld('sci_theme','')==='dark'){bodyEl.classList.add('dark-mode');$('themeToggle
 $('themeToggleBtn').onclick=()=>{bodyEl.classList.toggle('dark-mode');const d=bodyEl.classList.contains('dark-mode');sv('sci_theme',d?'dark':'light');$('themeToggleBtn').textContent=d?'☀️':'🌙'};
 
 /* ===== تهيئة القوائم ===== */
-$('deptBtns').innerHTML=DEPTS.map(d=>`<button class="btn" data-k="dept" data-v="${esc(d)}" data-n="levelStep">${esc(d)}</button>`).join('');
+$('deptBtns').innerHTML=deptBtnsHtml('عام');
 $('levelBtns').innerHTML=LEVELS.map(l=>`<button class="btn" data-k="level" data-v="${esc(l)}" data-n="semesterStep">${esc(l)}</button>`).join('');
-$('addDept').innerHTML=opts(['مشترك',...DEPTS]);
+function fillAddDept(){$('addDept').innerHTML=opts(['مشترك'].concat(deptsOf($('addTrack').value)))}
+fillAddDept();$('addTrack').addEventListener('change',fillAddDept);
 $('addLevel').innerHTML=opts(LEVELS);
 $('addWeek').innerHTML=opts(WEEKS);$('editWeek').innerHTML=opts(WEEKS);
 $('addType').innerHTML=opts(TYPES);
@@ -441,6 +446,7 @@ $('studentFlow').addEventListener('click',e=>{
   const k=b.dataset.k,v=b.dataset.v;
   if(k==='semester')return showResults(v);
   userPath[k]=v;
+  if(k==='track')$('deptBtns').innerHTML=deptBtnsHtml(v);
   $('lblDept').textContent=userPath.track||'';
   $('lblLevel').textContent=[userPath.track,userPath.dept].filter(Boolean).join(' - ');
   $('lblSem').textContent=[userPath.track,userPath.dept,userPath.level].filter(Boolean).join(' - ');
