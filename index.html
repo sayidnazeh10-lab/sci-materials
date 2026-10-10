@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCI-Materials | كلية العلوم - جامعة أسيوط</title>
+<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0f3d3e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg">
+<style>
+:root{--bg-color:#f4f7f6;--text-color:#333;--card-bg:#fff;--primary-color:#0f3d3e;--secondary-color:#1f8a70;--accent-color:#f4b942;--danger-color:#e74c3c;--success-color:#27ae60;--warning-color:#f39c12;--border-radius:12px}
+body.dark-mode{--bg-color:#121212;--text-color:#e0e0e0;--card-bg:#1e1e1e;--primary-color:#14312f;--secondary-color:#2a5d52;--accent-color:#e0a526;--danger-color:#c0392b;--success-color:#2ecc71}
+body{font-family:'Cairo',sans-serif;background:var(--bg-color);color:var(--text-color);margin:0;transition:.3s;overflow-x:hidden}
+.wrap{max-width:800px;margin:0 auto;padding:20px}
+[hidden]{display:none!important}
+#splashScreen{position:fixed;inset:0;background:var(--primary-color);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;color:#fff;transition:opacity .5s}
+.spinner{border:4px solid rgba(255,255,255,.3);border-top-color:var(--accent-color);border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin-top:20px}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.site-header{background:var(--primary-color);color:#fff;padding:15px 0;box-shadow:0 4px 6px rgba(0,0,0,.1);position:sticky;top:0;z-index:100}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:0 20px;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:15px}
+.brand-mark{font-size:24px;font-weight:bold;background:var(--accent-color);color:#000;padding:5px 10px;border-radius:8px}
+.brand-text h1{margin:0;font-family:'Markazi Text',serif;font-size:28px}
+.brand-text p{margin:0;font-size:12px;opacity:.8}
+.header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.icon-link{background:none;border:none;font-size:20px;cursor:pointer;color:#fff;padding:5px;position:relative}
+.announcement-bar{background:var(--warning-color);color:#000;padding:10px 20px;text-align:center;font-weight:bold;font-size:14px;display:none}
+.drawer-label{background:var(--card-bg);padding:30px;border-radius:var(--border-radius);box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px;text-align:center;animation:fadeIn .4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h2{margin-top:0;font-family:'Markazi Text',serif;font-size:32px;color:var(--primary-color)}
+body.dark-mode h2{color:var(--accent-color)}
+.level-picker{display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px}
+.btn{background:var(--secondary-color);color:#fff;border:none;padding:12px 24px;font-size:16px;font-family:'Cairo';border-radius:var(--border-radius);cursor:pointer;transition:.2s;font-weight:600}
+.btn:hover{background:var(--accent-color);color:#000;transform:translateY(-2px)}
+.btn-danger{background:var(--danger-color)}.btn-danger:hover{background:#c0392b;color:#fff}
+.btn-warning{background:var(--warning-color);color:#000}
+.chosen-level-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(31,138,112,.1);padding:10px 20px;border-radius:8px;margin-bottom:20px;font-weight:600;font-size:14px;gap:10px}
+.card-grid{display:grid;gap:20px;margin-top:20px;text-align:right}
+.material-card{background:var(--card-bg);border:1px solid #ddd;border-radius:var(--border-radius);overflow:hidden}
+.subject-btn{width:100%;background:var(--primary-color);color:#fff;padding:15px 20px;font-size:20px;font-family:'Cairo';font-weight:bold;border:none;cursor:pointer;text-align:right;display:flex;justify-content:space-between;align-items:center}
+body.dark-mode .subject-btn{background:#333;color:var(--accent-color)}
+.sl{display:flex;align-items:center}
+.fav-btn{font-size:22px;color:#ccc;margin-left:10px}
+.fav-btn.active{color:#f1c40f;text-shadow:0 0 5px rgba(241,196,15,.5)}
+.prog{font-size:12px;margin-left:10px;opacity:.85}
+.pbar{height:6px;background:rgba(0,0,0,.1);border-radius:4px;margin-bottom:10px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--success-color)}
+.subject-content{padding:20px;animation:fadeIn .3s}
+.category-title{margin:15px 0 10px;color:var(--secondary-color);font-size:18px;border-bottom:2px solid #eee;padding-bottom:5px}
+body.dark-mode .category-title{color:#fff;border-color:#444}
+.material-item{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;padding:15px;background:rgba(0,0,0,.02);border-radius:8px;border-right:4px solid var(--accent-color)}
+body.dark-mode .material-item{background:#2a2a2a;border-right-color:var(--secondary-color)}
+.material-item.done{opacity:.6}
+.item-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px}
+.item-title{display:flex;align-items:center;gap:8px;font-weight:bold;font-size:15px;flex-wrap:wrap}
+.item-meta{font-size:12px;color:#888;display:flex;gap:15px;flex-wrap:wrap}
+.countdown-badge,.new-badge{background:#f39c12;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:bold}
+.new-badge{background:var(--success-color)}
+.countdown-badge.urgent{background:#e74c3c;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.05)}}
+.action-links{display:flex;gap:8px;flex-wrap:wrap}
+.action-links button,.action-links a{font-family:'Cairo';font-size:13px;font-weight:bold;text-decoration:none;padding:6px 12px;border:none;border-radius:6px;cursor:pointer}
+.open-btn{color:var(--secondary-color);background:rgba(31,138,112,.1)}
+.download-btn{color:var(--success-color);background:rgba(39,174,96,.1)}
+.share-btn{color:#8e44ad;background:rgba(142,68,173,.1)}
+.report-btn{color:#d35400;background:rgba(211,84,0,.1)}
+.like-btn{color:#e67e22;background:rgba(230,126,34,.1)}.like-btn.liked{background:#e67e22;color:#fff}
+.done-btn{color:var(--success-color);background:rgba(39,174,96,.1)}.done-btn.on{background:var(--success-color);color:#fff}
+.edit-btn{color:#f39c12;background:rgba(243,156,18,.1)}.delete-btn{color:var(--danger-color);background:rgba(231,76,60,.1)}
+body.dark-mode .open-btn,body.dark-mode .download-btn{color:#fff;background:var(--secondary-color)}
+.comments-section{padding-top:10px;border-top:1px dashed #ddd}
+.comment-input-box{display:flex;gap:8px;margin-top:8px}
+.comment-input{flex:1;padding:8px;border:1px solid #ddd;border-radius:6px;font-family:'Cairo';min-width:0;background:var(--bg-color);color:var(--text-color)}
+.comment-item{background:rgba(0,0,0,.03);padding:8px;border-radius:6px;margin-bottom:5px;font-size:13px;display:flex;justify-content:space-between;gap:8px}
+body.dark-mode .comment-item{background:#1a1a1a}
+.filters{display:flex;gap:10px;margin-top:15px}
+.filters .form-input{flex:1}
+.upcoming{background:rgba(231,76,60,.1);border:1px solid var(--danger-color);border-radius:8px;padding:10px;margin-top:15px;text-align:right;font-size:14px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:none;justify-content:center;align-items:center;padding:20px}
+.modal-content{background:var(--card-bg);padding:20px;border-radius:12px;width:100%;max-width:400px;text-align:right;max-height:90vh;overflow-y:auto}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-weight:bold;margin-bottom:5px}
+.form-input,.form-select{width:100%;padding:10px;border:2px solid #ddd;border-radius:8px;font-family:'Cairo';box-sizing:border-box;background:var(--bg-color);color:var(--text-color)}
+.reports-container{background:rgba(231,76,60,.1);padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid var(--danger-color);display:none}
+.report-item{display:flex;justify-content:space-between;align-items:center;background:var(--card-bg);padding:10px;margin-bottom:10px;border-radius:6px;font-size:14px}
+.stats-container{display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.stat-box{flex:1;background:var(--card-bg);padding:15px;border-radius:8px;text-align:center;border:1px solid #ddd;min-width:100px}
+.stat-num{font-size:24px;font-weight:bold;color:var(--accent-color)}
+#toast-container{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .form-input{flex:1;min-width:150px}
+.action-links a,.action-links button{min-height:36px}
+@media(min-width:900px){.wrap{max-width:1000px}.card-grid{grid-template-columns:1fr 1fr;align-items:start}.modal-content{max-width:460px}}
+@media(max-width:600px){
+.wrap{padding:12px}
+.header-inner{padding:0 10px;justify-content:center}
+.brand-text h1{font-size:22px}.brand-mark{font-size:18px}
+.header-actions{gap:2px;justify-content:center}.icon-link{font-size:22px;padding:8px}
+.drawer-label{padding:18px 14px}
+h2{font-size:26px}
+.level-picker{gap:10px}.level-picker .btn{flex:1 1 calc(50% - 10px);padding:12px 8px;font-size:15px}
+.chosen-level-bar{flex-direction:column;align-items:stretch;text-align:center}
+.filters{flex-direction:column}.filters .form-select{max-width:none!important}
+.subject-btn{font-size:17px;padding:12px 14px}
+.subject-content{padding:12px}
+.item-header{flex-direction:column;align-items:stretch}
+.action-links{width:100%}.action-links button,.action-links a{flex:1 1 auto;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+.form-grid{grid-template-columns:1fr}
+.comment-input-box{flex-wrap:wrap}.comment-input-box .comment-input{max-width:none!important;flex:1 1 100%!important}
+.stat-box{min-width:45%}
+.modal-overlay{padding:10px}
+.toast{max-width:90vw;text-align:center}
+}
+@media(max-width:360px){.level-picker .btn{flex:1 1 100%}}
+.notification-dot{position:absolute;top:2px;right:2px;background:red;width:10px;height:10px;border-radius:50%;display:none}
+.notif-dropdown{position:fixed;left:50%;transform:translateX(-50%);width:min(340px,94vw);max-height:60vh;overflow-y:auto;background:var(--card-bg);color:var(--text-color);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);padding:12px;display:none;text-align:right;z-index:500;border:1px solid #ddd}
+.notif-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:8px}
+.notif-head button{border:0;background:none;font-size:20px;cursor:pointer;color:inherit}
+.notif-item{padding:8px 4px;border-bottom:1px solid #eee;font-size:14px}
+
+:root{--b1:#1f8a70;--b2:#f4b942;--glass:rgba(255,255,255,.84)}
+body.dark-mode{--glass:rgba(30,30,30,.82)}
+.drawer-label,.material-card{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+#bg::before,#bg::after{content:"";position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(60px);opacity:.34;will-change:transform;animation:drift 24s ease-in-out infinite alternate}
+#bg::before{background:radial-gradient(circle,var(--b1),transparent 70%);top:-22vmax;right:-18vmax}
+#bg::after{background:radial-gradient(circle,var(--b2),transparent 70%);bottom:-26vmax;left:-18vmax;animation-delay:-9s}
+body.dark-mode #bg::before,body.dark-mode #bg::after{opacity:.2}
+.bg-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(127,127,127,.2) 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:linear-gradient(#000,transparent 85%);mask-image:linear-gradient(#000,transparent 85%)}
+.sym{position:absolute;bottom:-50px;font-family:monospace;font-weight:bold;color:var(--b1);opacity:.15;animation:rise linear infinite}
+@keyframes drift{to{transform:translate(9vmax,7vmax) scale(1.18)}}
+@keyframes rise{to{transform:translateY(-118vh) rotate(25deg)}}
+@media(prefers-reduced-motion:reduce){#bg::before,#bg::after,.sym{animation:none!important}}
+.btn.sm{padding:6px 12px;font-size:13px}
+.note-btn{color:#16a085;background:rgba(22,160,133,.1)}.note-btn.on{background:#16a085;color:#fff}
+.tag{background:rgba(31,138,112,.12);color:var(--secondary-color);padding:2px 8px;border-radius:10px;cursor:pointer;font-weight:600}
+body.dark-mode .tag{color:#fff}
+.modal-content h3{margin-top:0}
+.ev{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(136,136,136,.3);font-size:14px}
+.menu{display:grid;gap:8px}
+.menu-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border:0;border-radius:10px;background:rgba(31,138,112,.1);color:var(--text-color);font-family:'Cairo';font-size:16px;font-weight:600;cursor:pointer;text-align:right}
+.menu-btn span{font-size:22px}
+
+:focus-visible{outline:3px solid var(--accent-color);outline-offset:2px}
+.reader{background:var(--card-bg);width:100%;max-width:900px;height:92vh;border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
+.reader-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--primary-color);color:#fff;gap:10px}
+.reader-bar button{background:none;border:0;color:#fff;font-size:22px;cursor:pointer}
+.reader iframe{flex:1;border:0;width:100%;background:#fff}
+@media(max-width:600px){.sym{display:none}}
+
+.atabs{display:flex;gap:6px;overflow-x:auto;margin:16px 0;padding-bottom:6px;border-bottom:2px solid rgba(127,127,127,.2);-webkit-overflow-scrolling:touch}
+.atab{flex:1 0 auto;padding:10px 14px;border:0;background:transparent;font-family:'Cairo';font-size:15px;font-weight:700;cursor:pointer;border-radius:10px;color:var(--text-color);opacity:.75;white-space:nowrap}
+.atab.on{opacity:1;background:var(--secondary-color);color:#fff}
+.rbadge:not(:empty){background:var(--danger-color);color:#fff;border-radius:10px;padding:1px 7px;font-size:12px;margin-right:4px}
+.apanel{text-align:right}
+.acard{background:rgba(127,127,127,.08);border:1px solid rgba(127,127,127,.18);border-radius:12px;padding:16px;margin-bottom:16px}
+.acard h4{margin:0 0 10px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}
+.stat-card{background:linear-gradient(135deg,var(--secondary-color),var(--primary-color));color:#fff;border-radius:14px;padding:14px;text-align:center}
+.stat-card .ic{font-size:24px}.stat-card .stat-num{color:#fff;font-size:26px}.stat-card small{opacity:.85}
+.agrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:8px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border:0;border-radius:12px;background:rgba(31,138,112,.12);color:var(--text-color);font-family:'Cairo';font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.tile span{font-size:26px}.tile:hover{background:var(--secondary-color);color:#fff;transform:translateY(-2px)}
+.frow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid rgba(127,127,127,.25);flex-wrap:wrap}
+.finfo{flex:1;min-width:220px;text-align:right;line-height:1.7}
+.finfo small{color:#888}
+</style>
+</head>
+<body>
+<div id="bg"><div class="bg-dots"></div></div>
+<div id="splashScreen"><h1 style="font-family:'Markazi Text';font-size:48px;margin:0">SCI-Materials</h1><p>كلية العلوم - جامعة أسيوط</p><div class="spinner"></div></div>
+<div id="globalAnnouncement" class="announcement-bar"></div>
+<div id="toast-container"></div>
+
+<header class="site-header" id="siteHeader"><div class="wrap header-inner">
+  <div class="brand"><span class="brand-mark">SCI</span><div class="brand-text"><h1>SCI-Materials</h1><p>كلية العلوم - جامعة أسيوط</p></div></div>
+  <div class="header-actions">
+    <button onclick="openGPAModal()" class="icon-link" title="حاسبة المعدل" aria-label="حاسبة المعدل">🧮</button>
+    <button onclick="openMenu()" class="icon-link" title="المزيد" aria-label="المزيد">☰</button>
+    <button id="notifBtn" onclick="toggleNotif()" class="icon-link" title="الإشعارات" aria-label="الإشعارات">🔔<span id="notifDot" class="notification-dot"></span></button>
+    <button onclick="refresh(true)" class="icon-link" title="تحديث" aria-label="تحديث">🔄</button>
+    <button id="themeToggleBtn" class="icon-link" title="المظهر" aria-label="المظهر">🌙</button>
+    <button onclick="goHome()" class="icon-link" title="الرئيسية" aria-label="الرئيسية">🏠</button>
+    <button id="adminBtn" onclick="showSection('adminLogin')" class="icon-link" title="الإدارة" aria-label="الإدارة">⚙️</button>
+    <button id="logoutBtn" onclick="logoutAdmin()" class="icon-link" style="display:none" title="خروج" aria-label="خروج">🚪</button>
+  </div>
+</div></header>
+<div id="readModal" class="modal-overlay"><div class="reader"><div class="reader-bar"><b id="rdT"></b><button onclick="closeReader()" aria-label="إغلاق">✕</button></div><iframe id="rdF" title="عارض الملف" allowfullscreen></iframe></div></div>
+<div id="toolModal" class="modal-overlay"><div class="modal-content" id="toolBody"></div></div>
+<div id="notifDropdown" class="notif-dropdown" role="dialog" aria-label="الإشعارات"><div class="notif-head"><b>جديد المنصة</b><button onclick="closeNotif()" aria-label="إغلاق">✕</button></div><div id="notifList">لا جديد.</div></div>
+
+<main class="wrap">
+<div id="studentFlow">
+  <section id="trackStep" class="drawer-label student-step">
+    <h2>مرحباً بك! 👋</h2>
+    <div class="level-picker">
+      <button class="btn" data-k="track" data-v="عام" data-n="deptStep">نظام عام</button>
+      <button class="btn" data-k="track" data-v="خاص" data-n="deptStep">نظام خاص (برامج)</button>
+    </div>
+  </section>
+  <section id="deptStep" class="drawer-label student-step" hidden>
+    <div class="chosen-level-bar"><span>النظام: <strong id="lblDept"></strong></span><button class="btn" onclick="resetTo('trackStep')">تغيير</button></div>
+    <h2>اختار قسمك</h2>
+    <p style="font-size:12px;color:#888">اختار قسمك. المواد المشتركة بين الأقسام بتظهر لكل الطلاب.</p>
+    <div id="deptBtns" class="level-picker"></div>
+  </section>
+  <section id="levelStep" class="drawer-label student-step" hidden>
+    <div class="chosen-level-bar"><span>المسار: <strong id="lblLevel"></strong></span><button class="btn" onclick="resetTo('trackStep')">البداية</button></div>
+    <h2>الفرقة الدراسية</h2>
+    <div id="levelBtns" class="level-picker"></div>
+  </section>
+  <section id="semesterStep" class="drawer-label student-step" hidden>
+    <div class="chosen-level-bar"><span>المسار: <strong id="lblSem"></strong></span><button class="btn" onclick="resetTo('levelStep')">تغيير الفرقة</button></div>
+    <h2>الفصل الدراسي</h2>
+    <div class="level-picker">
+      <button class="btn" data-k="semester" data-v="الفصل الأول">الترم الأول</button>
+      <button class="btn" data-k="semester" data-v="الفصل الثاني">الترم الثاني</button>
+    </div>
+  </section>
+  <section id="resultsStep" class="drawer-label student-step" hidden>
+    <div class="chosen-level-bar" style="background:var(--primary-color);color:#fff"><span id="chosenResultsLabel"></span><button class="btn btn-danger" style="padding:5px 10px;font-size:12px" onclick="clearSavedPath()">تغيير مساري</button></div>
+    <h2>موادك الدراسية 📚</h2>
+    <div id="upcoming"></div>
+    <div class="filters">
+      <input type="search" id="searchBox" class="form-input" placeholder="🔍 ابحث عن مادة أو ملف..." aria-label="بحث">
+      <select id="weekFilter" class="form-select" style="max-width:150px" aria-label="الأسبوع"></select>
+      <select id="typeFilter" class="form-select" style="max-width:150px" aria-label="النوع"></select>
+    </div>
+    <p style="color:#888;font-size:13px">اضغط ⭐ لتثبيت المادة، و✔ لتحديد إنك خلصت الملف</p>
+    <div id="cards" class="card-grid"></div>
+  </section>
+</div>
+
+<section id="adminLogin" class="drawer-label" hidden>
+  <h2>دخول الإدارة</h2>
+  <div class="form-group" style="max-width:300px;margin:0 auto">
+    <input type="password" id="adminPassword" class="form-input" placeholder="كلمة المرور..." style="text-align:center">
+    <button class="btn" onclick="checkLogin()" style="width:100%;margin-top:15px">دخول</button>
+  </div>
+</section>
+
+<section id="adminDashboard" class="drawer-label" hidden>
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <h2 style="margin:0">لوحة التحكم</h2><span id="adminHello" class="tag" style="font-size:14px"></span>
+  </div>
+  <div class="atabs" role="tablist">
+    <button class="atab on" data-t="home" onclick="adminTab('home')">🏠 الرئيسية <span id="repBadge" class="rbadge"></span></button>
+    <button class="atab" data-t="add" onclick="adminTab('add')">➕ إضافة</button>
+    <button class="atab" data-t="files" onclick="adminTab('files')">🗂 الملفات</button>
+    <button class="atab" data-t="settings" onclick="adminTab('settings')">⚙️ الإعدادات</button>
+  </div>
+
+  <div id="ap-home" class="apanel">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="ic">📁</div><div id="statTotal" class="stat-num">0</div><small>إجمالي الملفات</small></div>
+      <div class="stat-card"><div class="ic">📚</div><div id="statSubs" class="stat-num">0</div><small>مادة</small></div>
+      <div class="stat-card"><div class="ic">🎓</div><div id="statLecSec" class="stat-num">0</div><small>محاضرات/سكاشن</small></div>
+      <div class="stat-card"><div class="ic">📝</div><div id="statExams" class="stat-num">0</div><small>امتحانات</small></div>
+      <div class="stat-card"><div class="ic">👁</div><div id="statViews" class="stat-num">0</div><small>مشاهدات / تحميلات</small></div>
+    </div>
+    <div id="reportsSection" class="reports-container"><h3 style="margin-top:0">⚠️ روابط مُبلغ عنها</h3><div id="reportsList"></div></div>
+    <div class="acard">
+      <h4>📢 إعلان للطلاب</h4>
+      <div class="row"><input type="text" id="announceInput" class="form-input" placeholder="نص الإعلان..."><button class="btn btn-warning" onclick="saveAnnouncement()">نشر</button><button class="btn btn-danger" onclick="clearAnnouncement()">حذف</button></div>
+    </div>
+    <h4>اختصارات</h4>
+    <div class="agrid">
+      <button class="tile" onclick="openEvents()"><span>📅</span>المواعيد</button>
+      <button class="tile" onclick="openManage()"><span>🗓</span>الجدول</button>
+      <button class="tile" onclick="openReqList()"><span>📥</span>طلبات الطلاب</button>
+      <button class="tile" onclick="openDash()"><span>📈</span>إحصائيات</button>
+      <button class="tile" onclick="openLog()"><span>🧾</span>سجل النشاط</button>
+    </div>
+  </div>
+
+  <div id="ap-add" class="apanel" hidden>
+    <div class="acard">
+      <h4>1) المسار</h4>
+      <div class="form-grid">
+        <select id="addTrack" class="form-select"><option value="عام">نظام عام</option><option value="خاص">نظام خاص (برامج)</option></select>
+        <select id="addDept" class="form-select"></select>
+        <select id="addLevel" class="form-select"></select>
+        <select id="addSemester" class="form-select"><option value="الفصل الأول">الفصل الأول</option><option value="الفصل الثاني">الفصل الثاني</option></select>
+        <input type="text" id="addSubject" class="form-input" placeholder="اسم المادة">
+        <input type="text" id="addDoctor" class="form-input" placeholder="اسم الدكتور (اختياري)">
+      </div>
+    </div>
+    <div class="acard">
+      <h4>2) الملف</h4>
+      <div class="form-grid">
+        <select id="addType" class="form-select"></select>
+        <select id="addWeek" class="form-select"></select>
+        <input type="text" id="addTitle" class="form-input" placeholder="عنوان الملف">
+        <input type="url" id="addLink" class="form-input" placeholder="الرابط (https://...)">
+        <input type="text" id="addTags" class="form-input" placeholder="وسوم: مهم، مراجعة (اختياري)">
+        <input type="date" id="addDeadline" class="form-input" style="display:none" title="تاريخ التسليم">
+        <label style="font-size:12px">نشر في وقت لاحق (اختياري)<input type="datetime-local" id="addPub" class="form-input"></label>
+      </div>
+      <button class="btn" onclick="saveMaterial()" style="width:100%;margin-top:14px">🚀 نشر الملف</button>
+    </div>
+    <div class="acard">
+      <h4>➕ إضافة جماعية</h4>
+      <p style="font-size:12px;margin:0 0 8px">يستخدم بيانات المسار والمادة والنوع والأسبوع من فوق. اكتب كل ملف في سطر بالشكل: العنوان | الرابط (حتى 40 ملف).</p>
+      <textarea id="addBulk" class="form-input" style="min-height:110px" placeholder="محاضرة 1 | https://drive.google.com/..."></textarea>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="saveBulk()">نشر الكل</button>
+    </div>
+  </div>
+
+  <div id="ap-files" class="apanel" hidden>
+    <div class="filters" style="margin-top:0">
+      <input type="search" id="afSearch" class="form-input" placeholder="🔍 ابحث بالعنوان أو المادة أو الدكتور..." aria-label="بحث في الملفات">
+      <select id="afSub" class="form-select" style="max-width:200px" aria-label="المادة"></select>
+    </div>
+    <p style="margin:8px 0;font-size:13px;color:#888"><span id="afCount"></span> • الأحدث أولاً</p>
+    <div id="afList"></div>
+    <button id="afMore" class="btn" style="width:100%;margin-top:10px;display:none">عرض المزيد</button>
+  </div>
+
+  <div id="ap-settings" class="apanel" hidden>
+    <div class="acard">
+      <h4>💾 النسخ الاحتياطي</h4>
+      <p style="font-size:12px;margin:0 0 8px">انزّل نسخة من كل الملفات كل فترة، وتقدر ترجّعها وقت الحاجة.</p>
+      <div class="row"><button class="btn" onclick="exportBackup()">⬇️ نسخة احتياطية</button><button class="btn owner-only" onclick="document.getElementById('importFile').click()">⬆️ استرجاع نسخة</button><input type="file" id="importFile" accept=".json" hidden></div>
+    </div>
+    <div class="acard owner-only">
+      <h4>⚠️ منطقة الخطر</h4>
+      <p style="font-size:12px;margin:0 0 8px">يمسح كل الملفات والبلاغات نهائياً. اعمل نسخة احتياطية الأول.</p>
+      <button class="btn btn-danger" onclick="clearAllData()">تصفير السيستم</button>
+    </div>
+    <div class="acard">
+      <h4>🚪 الجلسة</h4>
+      <button class="btn btn-warning" onclick="logoutAdmin()">تسجيل الخروج</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="editModal" class="modal-overlay"><div class="modal-content">
+  <h3 style="margin-top:0">تعديل الملف</h3>
+  <input type="hidden" id="editId">
+  <div class="form-group"><label>اسم المادة</label><input type="text" id="editSubject" class="form-input"></div>
+  <div class="form-group"><label>العنوان</label><input type="text" id="editTitle" class="form-input"></div>
+  <div class="form-group"><label>الرابط</label><input type="url" id="editLink" class="form-input"></div>
+  <div class="form-group"><label>الأسبوع</label><select id="editWeek" class="form-select"></select></div>
+  <div class="form-group"><label>النوع</label><select id="editType" class="form-select"></select></div>
+  <div class="form-group"><label>النظام</label><select id="editTrack" class="form-select"></select></div>
+  <div class="form-group"><label>القسم</label><select id="editDept" class="form-select"></select></div>
+  <div class="form-group"><label>الفرقة</label><select id="editLevel" class="form-select"></select></div>
+  <div class="form-group"><label>الفصل</label><select id="editSem" class="form-select"></select></div>
+  <div class="form-group"><label>الوسوم</label><input type="text" id="editTags" class="form-input"></div>
+  <div class="form-group"><label>اسم الدكتور</label><input type="text" id="editDoctor" class="form-input"></div>
+  <div style="display:flex;gap:10px"><button class="btn" style="flex:1" onclick="submitEdit()">حفظ</button><button class="btn btn-danger" style="flex:1" onclick="closeModal('editModal')">إلغاء</button></div>
+</div></div>
+
+<div id="gpaModal" class="modal-overlay"><div class="modal-content">
+  <h3 style="margin-top:0">🧮 حاسبة الـ GPA</h3>
+  <div style="display:flex;gap:10px;margin-bottom:10px">
+    <input type="number" id="prevGpa" class="form-input" placeholder="المعدل السابق" step="0.01" min="0" max="4">
+    <input type="number" id="prevHrs" class="form-input" placeholder="ساعاته" min="0">
+  </div>
+  <div id="gpaCourses"></div>
+  <button class="btn" style="width:100%;font-size:12px;margin-bottom:10px" onclick="addGpaRow()">+ مادة</button>
+  <button class="btn btn-warning" style="width:100%;margin-bottom:10px" onclick="calculateGPA()">احسب</button>
+  <div id="gpaResult" style="text-align:center;font-size:20px;font-weight:bold;display:none"></div>
+  <button class="btn btn-danger" style="width:100%;margin-top:15px" onclick="closeModal('gpaModal')">إغلاق</button>
+</div></div>
+
+<script>
+const DEPTS=['الرياضيات','الفيزياء','الكيمياء','النبات والميكروبيولوجي','علم الحيوان','علم الحشرات','الجيولوجيا'];
+const LEVELS=['الفرقة الأولى','الفرقة الثانية','الفرقة الثالثة','الفرقة الرابعة'];
+const TYPES=['محاضرات','سكاشن','ملخصات','امتحانات سابقة','تكليفات'];
+const WEEKS=['عام',...Array.from({length:16},(_,i)=>'الأسبوع '+(i+1)),'ميدتيرم','فاينال'];
+const GR=[['A+',4],['A-',3.7],['B+',3.3],['B',3],['B-',2.7],['C+',2.3],['C',2],['C-',1.7],['D+',1.3],['D',1],['F',0]];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function ld(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){toast('التخزين غير متاح',1)}}
+const getDB=()=>DB;
+const getReps=()=>REPS;
+const opts=(a,sel)=>a.map(x=>`<option value="${esc(x)}"${x===sel?' selected':''}>${esc(x)}</option>`).join('');
+const genId=()=>'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function toast(m,err){const t=document.createElement('div');t.className='toast';t.style.background=err?'#e74c3c':'#27ae60';t.textContent=m;$('toast-container').appendChild(t);setTimeout(()=>{t.style.opacity=0;setTimeout(()=>t.remove(),300)},3000)}
+function safeUrl(s){try{const u=new URL(s);return /^https?:$/.test(u.protocol)?u.href:''}catch(e){return ''}}
+function getDL(l){
+  let m=l.match(/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([\w-]+)/);
+  if(m)return `https://docs.google.com/${m[1]}/d/${m[2]}/export?format=${m[1]==='spreadsheets'?'xlsx':m[1]==='presentation'?'pptx':'pdf'}`;
+  if(l.includes('drive.google.com')&&!l.includes('/folders/')){m=l.match(/\/d\/([\w-]+)/)||l.match(/[?&]id=([\w-]+)/);if(m)return `https://drive.usercontent.google.com/download?id=${m[1]}&export=download&confirm=t`}
+  return l;
+}
+function getIcon(l){if(l.includes('youtu'))return '🎬';if(/\.pdf($|\?)/i.test(l))return '📄';if(l.includes('/folders/'))return '📁';return '🔗'}
+function dlBadge(d){
+  if(!d)return '';const e=new Date(d+'T23:59:59'),days=Math.ceil((e-new Date())/864e5);
+  if(e<new Date())return '<span class="countdown-badge urgent">انتهى الوقت</span>';
+  return `<span class="countdown-badge${days<=2?' urgent':''}">⏳ ${days<=1?'آخر يوم':days+' يوم'}</span>`;
+}
+function copyText(t){
+  if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t).then(()=>toast('تم النسخ 🔗'));
+  const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast('تم النسخ 🔗')}catch(e){toast('تعذر النسخ',1)}a.remove();
+}
+
+/* ===== الثيم والتركيز ===== */
+let isAdmin=false;
+const bodyEl=document.body;
+if(ld('sci_theme','')==='dark'){bodyEl.classList.add('dark-mode');$('themeToggleBtn').textContent='☀️'}
+$('themeToggleBtn').onclick=()=>{bodyEl.classList.toggle('dark-mode');const d=bodyEl.classList.contains('dark-mode');sv('sci_theme',d?'dark':'light');$('themeToggleBtn').textContent=d?'☀️':'🌙'};
+
+/* ===== تهيئة القوائم ===== */
+$('deptBtns').innerHTML=DEPTS.map(d=>`<button class="btn" data-k="dept" data-v="${esc(d)}" data-n="levelStep">${esc(d)}</button>`).join('');
+$('levelBtns').innerHTML=LEVELS.map(l=>`<button class="btn" data-k="level" data-v="${esc(l)}" data-n="semesterStep">${esc(l)}</button>`).join('');
+$('addDept').innerHTML=opts(['مشترك',...DEPTS]);
+$('addLevel').innerHTML=opts(LEVELS);
+$('addWeek').innerHTML=opts(WEEKS);$('editWeek').innerHTML=opts(WEEKS);
+$('addType').innerHTML=opts(TYPES);
+$('weekFilter').innerHTML='<option value="">كل الأسابيع</option>'+opts(WEEKS);
+$('addType').onchange=()=>{$('addDeadline').style.display=$('addType').value==='تكليفات'?'block':'none'};
+
+/* ===== الإشعارات والإعلان ===== */
+
+
+
+
+
+/* ===== المسار والتنقل ===== */
+let userPath=ld('sci_path',{});
+function goHome(){showSection('studentFlow');if(!isAdmin&&userPath.semester)showResults(userPath.semester);else resetTo('trackStep')}
+function clearSavedPath(){try{localStorage.removeItem('sci_path')}catch(e){}userPath={};resetTo('trackStep')}
+function goStep(n){document.querySelectorAll('.student-step').forEach(s=>s.hidden=true);$(n).hidden=false}
+function resetTo(n){if(n==='trackStep')userPath={};goStep(n)}
+function showResults(sem){
+  userPath.semester=sem;sv('sci_path',userPath);goStep('resultsStep');
+  $('chosenResultsLabel').textContent=`${userPath.track} - ${userPath.dept} > ${userPath.level} > ${sem}`;render();
+}
+$('studentFlow').addEventListener('click',e=>{
+  const b=e.target.closest('.btn[data-k]');if(!b)return;
+  const k=b.dataset.k,v=b.dataset.v;
+  if(k==='semester')return showResults(v);
+  userPath[k]=v;
+  $('lblDept').textContent=userPath.track||'';
+  $('lblLevel').textContent=[userPath.track,userPath.dept].filter(Boolean).join(' - ');
+  $('lblSem').textContent=[userPath.track,userPath.dept,userPath.level].filter(Boolean).join(' - ');
+  goStep(b.dataset.n);
+});
+function showSection(id){
+  ['studentFlow','adminLogin','adminDashboard'].forEach(i=>$(i).hidden=true);$(id).hidden=false;
+  if(id==='studentFlow'&&!$('resultsStep').hidden)render();
+  if(id==='adminDashboard')adminTab('home')
+}
+
+/* ===== الإدارة ===== */
+
+$('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin()});
+
+function updateStats(){
+  const db=getDB();$('statTotal').textContent=db.length;
+  $('statLecSec').textContent=db.filter(i=>i.type==='محاضرات'||i.type==='سكاشن').length;
+  $('statSubs').textContent=new Set(db.map(i=>i.subject)).size;$('statExams').textContent=db.filter(i=>i.type==='امتحانات سابقة').length;
+  $('statViews').textContent=db.reduce((a,i)=>a+(i.views||0),0)+' / '+db.reduce((a,i)=>a+(i.downloads||0),0);
+}
+
+
+
+function openEdit(id){
+  const m=getDB().find(x=>x.id===id);if(!m)return;
+  $('editId').value=id;$('editSubject').value=m.subject;$('editTitle').value=m.title;$('editLink').value=m.viewLink;$('editWeek').value=m.week||'عام';$('editType').value=m.type;$('editTrack').value=m.track;$('editDept').value=m.dept;$('editLevel').value=m.level;$('editSem').value=m.semester;$('editTags').value=m.tags||'';$('editDoctor').value=m.doctor||'';$('editModal').style.display='flex';
+}
+
+function exportBackup(){
+  const b=new Blob([JSON.stringify({db:getDB(),reports:getReps(),ann:ld('sci_ann','')},null,1)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='sci-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);
+}
+
+
+/* ===== البلاغات ===== */
+
+function renderReports(){
+  const r=getReps();$('repBadge').textContent=r.length||'';$('reportsSection').style.display=r.length?'block':'none';
+  $('reportsList').innerHTML=r.map(x=>`<div class="report-item"><span>${esc(x.subject)} - ${esc(x.title)}</span><button class="btn btn-warning" style="padding:4px 10px" data-rid="${esc(x.id)}">إخفاء</button></div>`).join('');
+}
+
+
+/* ===== العرض ===== */
+let favs=ld('sci_favs',[]),liked=ld('sci_liked',[]),done=ld('sci_done',[]),openSubs=new Set(),Q='',W='',TF='';
+$('searchBox').addEventListener('input',e=>{Q=norm(e.target.value.trim());render()});
+$('weekFilter').addEventListener('change',e=>{W=e.target.value;render()});
+
+function render(){
+  const saved={};document.querySelectorAll('#cards input').forEach(i=>saved[i.id]=i.value);
+  const p=userPath,notes=ld('sci_notes',{});
+  const all=getDB().filter(i=>i.track===p.track&&i.level===p.level&&i.semester===p.semester&&(i.dept===p.dept||i.dept==='مشترك')&&(isAdmin||!i.publishAt||+i.publishAt<=Date.now()));
+  const soon=all.filter(i=>{if(i.type!=='تكليفات'||!i.deadline||done.includes(i.id))return false;const e=new Date(i.deadline+'T23:59:59'),n=new Date();return e>=n&&e-n<7*864e5});
+  $('upcoming').innerHTML=evBanner()+(soon.length?`<div class="upcoming"><strong>⏰ تكليفات قريبة:</strong>${soon.map(i=>`<div>• ${esc(i.subject)} - ${esc(i.title)} ${dlBadge(i.deadline)}</div>`).join('')}</div>`:'');
+  let db=all;
+  if(Q)db=db.filter(i=>norm(i.title+' '+i.subject+' '+(i.tags||'')).includes(Q));
+  if(W)db=db.filter(i=>i.week===W);
+  if(TF)db=db.filter(i=>i.type===TF);
+  const box=$('cards');
+  if(!db.length){box.innerHTML='<p style="text-align:center">لا توجد ملفات حالياً في هذا المسار.</p>';return}
+  const g={};
+  db.forEach(i=>{(g[i.subject]=g[i.subject]||{});(g[i.subject][i.type]=g[i.subject][i.type]||[]).push(i)});
+  const subs=Object.keys(g).sort((a,b)=>(favs.includes(b)-favs.includes(a))||a.localeCompare(b,'ar'));
+  const single=subs.length===1;
+  box.innerHTML=subs.map(sub=>{
+    const isOpen=single||openSubs.has(sub),items=all.filter(i=>i.subject===sub),doc=all.filter(i=>i.subject===sub&&i.doctor).sort((x,y)=>y.timestamp-x.timestamp).map(i=>i.doctor)[0],dn=items.filter(i=>done.includes(i.id)).length,pct=items.length?Math.round(dn/items.length*100):0;
+    let h=`<div class="material-card"><button class="subject-btn" data-act="tog" data-s="${esc(sub)}"><div class="sl"><span class="fav-btn ${favs.includes(sub)?'active':''}" data-act="fav" data-s="${esc(sub)}" role="button" aria-label="تثبيت">⭐</span><span class="fav-btn" data-act="sharesub" data-s="${esc(sub)}" role="button" aria-label="مشاركة المادة" style="font-size:18px">🔗</span><span>📚 ${esc(sub)}${doc?` <small style="font-weight:normal;opacity:.85;margin-right:6px">👨‍🏫 ${esc(doc)}</small>`:''}</span></div><span><span class="prog">${dn}/${items.length}</span>${isOpen?'▲':'▼'}</span></button><div class="subject-content" style="display:${isOpen?'block':'none'}"><div class="pbar"><i style="width:${pct}%"></i></div>`;
+    TYPES.forEach(t=>{
+      const list=(g[sub][t]||[]).slice().sort((a,b)=>(WEEKS.indexOf(a.week)-WEEKS.indexOf(b.week))||a.title.localeCompare(b.title,'ar',{numeric:true}));
+      if(!list.length)return;
+      h+=`<h4 class="category-title">${t}</h4>`;
+      list.forEach(m=>{
+        const isNew=Date.now()-m.timestamp<7*864e5,dn2=done.includes(m.id),lk=liked.includes(m.id);
+        const cm=(m.comments||[]).map((c,i)=>{c=typeof c==='string'?{n:'طالب',t:c}:c;return `<div class="comment-item"><span>💬 <b>${esc(c.n)}:</b> ${esc(c.t)}</span>${isAdmin?`<button class="delete-btn" style="border:0;border-radius:4px;cursor:pointer" data-act="delc" data-id="${m.id}" data-i="${i}" aria-label="حذف تعليق">🗑️</button>`:''}</div>`}).join('');
+        h+=`<div class="material-item${dn2?' done':''}"><div class="item-header"><span class="item-title">${getIcon(m.viewLink)} ${esc(m.title)} ${isNew?'<span class="new-badge">جديد</span>':''} ${m.type==='تكليفات'?dlBadge(m.deadline):''}</span>
+<div class="action-links">
+<button class="done-btn ${dn2?'on':''}" data-act="done" data-id="${m.id}" aria-label="تم">✔</button>
+<button class="report-btn" data-act="rep" data-id="${m.id}" aria-label="إبلاغ">⚠</button>
+<button class="open-btn" data-act="read" data-id="${m.id}" aria-label="قراءة">📖</button>
+<button class="note-btn ${notes[m.id]?'on':''}" data-act="note" data-id="${m.id}" aria-label="ملاحظة">📝</button>
+<button class="share-btn" data-act="share" data-id="${m.id}" aria-label="مشاركة">🔗</button>
+<button class="like-btn ${lk?'liked':''}" data-act="like" data-id="${m.id}">👍 ${m.likes||0}</button>
+<a href="${esc(m.viewLink)}" target="_blank" rel="noopener noreferrer" class="open-btn" data-act="view" data-id="${m.id}">عرض</a>
+<a href="${esc(getDL(m.viewLink))}" target="_blank" rel="noopener noreferrer" class="download-btn" data-act="dl" data-id="${m.id}">تحميل</a>
+${isAdmin?`<button class="edit-btn" data-act="copy" data-id="${m.id}" aria-label="نسخ">📋</button><button class="edit-btn" data-act="edit" data-id="${m.id}" aria-label="تعديل">✏️</button><button class="delete-btn" data-act="del" data-id="${m.id}" aria-label="حذف">🗑️</button>`:''}
+</div></div>
+<div class="item-meta"><span>📅 ${esc(m.week||'عام')}</span><span>🗓 ${esc(m.dateAdded||'')}</span>${m.by?`<span>✍ ${esc(m.by)}</span>`:''}<span>👁 ${m.views||0}</span><span>⬇ ${m.downloads||0}</span>${m.dept==='مشترك'?'<span>🌐 مشترك</span>':''}${String(m.tags||'').split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="tag" data-act="tag" data-s="${esc(t)}">#${esc(t)}</span>`).join('')}</div>
+<div class="comments-section"><div>${cm}</div><div class="comment-input-box"><input type="text" id="cn-${m.id}" class="comment-input" style="max-width:100px;flex:none" placeholder="اسمك" maxlength="20"><input type="text" id="cm-${m.id}" class="comment-input" placeholder="اكتب تعليقك..." maxlength="300"><button class="btn" style="padding:5px 10px;font-size:12px" data-act="cmt" data-id="${m.id}">إرسال</button></div></div></div>`;
+      });
+    });
+    return h+'</div></div>';
+  }).join('');
+  const nm=ld('sci_name','');
+  document.querySelectorAll('#cards input[id^="cn-"]').forEach(i=>i.value=saved[i.id]??nm);
+  document.querySelectorAll('#cards input[id^="cm-"]').forEach(i=>{if(saved[i.id])i.value=saved[i.id]});
+}
+function toggleIn(arr,v,key){const i=arr.indexOf(v);i>-1?arr.splice(i,1):arr.push(v);sv(key,arr);return i===-1}
+
+
+/* ===== GPA ===== */
+function gpaRow(h='',g='4'){
+  const d=document.createElement('div');d.className='form-group';d.style.cssText='display:flex;gap:10px';
+  d.innerHTML=`<input type="number" class="form-input gpa-hours" placeholder="الساعات" min="0" value="${esc(h)}"><select class="form-select gpa-grade">${GR.map(x=>`<option value="${x[1]}"${String(x[1])===String(g)?' selected':''}>${x[0]}</option>`).join('')}</select>`;
+  $('gpaCourses').appendChild(d);
+}
+function addGpaRow(){gpaRow()}
+function openGPAModal(){
+  if(!$('gpaCourses').children.length){const s=ld('sci_gpa',[]);(s.length?s:[{h:'',g:'4'}]).forEach(r=>gpaRow(r.h,r.g))}
+  $('gpaModal').style.display='flex';
+}
+function closeModal(id){$(id).style.display='none'}
+function calculateGPA(){
+  let P=0,H=0;const rows=[];
+  document.querySelectorAll('#gpaCourses .form-group').forEach(r=>{
+    const hv=r.querySelector('.gpa-hours').value,h=parseFloat(hv),g=parseFloat(r.querySelector('.gpa-grade').value);
+    rows.push({h:hv,g:String(g)});if(h>0){H+=h;P+=h*g}
+  });
+  sv('sci_gpa',rows);
+  const r=$('gpaResult');r.style.display='block';
+  if(!H){r.textContent='أدخل الساعات!';r.style.color='red';return}
+  let t=`معدل الترم: ${(P/H).toFixed(2)}`;
+  const pg=parseFloat($('prevGpa').value),ph=parseFloat($('prevHrs').value);
+  if(pg>=0&&ph>0)t+=`<br>التراكمي: ${((P+pg*ph)/(H+ph)).toFixed(2)}`;
+  r.innerHTML=t;r.style.color='var(--success-color)';
+}
+
+/* ===== الاتصال بـ Google Sheets ===== */
+const API='https://script.google.com/macros/s/AKfycbwaP7INeCujjFb2fQyYi-Q9rTd1RCyPVYbYkqhRmPH60_xwXGdfaWK4XxX7WLeRQxQl/exec'; // رابط الـ Web App من Apps Script
+let DB=ld('sci_db',[]),REPS=[],ANN=ld('sci_ann',''),PASS='',ME='',OWNER=false,EVENTS=ld('sci_ev',[]),SCHED=ld('sci_sched',[]);
+const hasApi=()=>/^https?:/.test(API);
+async function api(a,d={}){
+  if(!hasApi())throw new Error('حط رابط الـ API في أول السكريبت');
+  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:a,pass:PASS,...d})});
+  const j=await r.json();if(j.error)throw new Error(j.error);return j;
+}
+function apply(j){
+  if(!j||!j.items)return;DB=j.items;REPS=j.reports||[];ANN=j.ann||'';EVENTS=j.events||EVENTS;sv('sci_ev',EVENTS);SCHED=j.schedule||SCHED;sv('sci_sched',SCHED);sv('sci_db',DB);sv('sci_ann',ANN);
+  renderNotif();loadAnnouncement();if(!$('studentFlow').hidden&&!$('resultsStep').hidden)render();
+  if(!$('adminDashboard').hidden){updateStats();renderReports();if(!$('ap-files').hidden)renderAdminFiles()}
+}
+async function refresh(manual){
+  try{if(!hasApi())throw new Error('لسه مفيش رابط API');apply(await (await fetch(API)).json());if(manual===true)toast('تم التحديث ✅')}
+  catch(e){toast(manual===true?e.message:'مفيش اتصال، بعرض آخر نسخة محفوظة',1)}
+}
+async function act(a,d,msg){try{apply(await api(a,d));if(msg)toast(msg);return true}catch(e){toast(e.message||'خطأ في الاتصال',1);return false}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+function loadAnnouncement(){const b=$('globalAnnouncement');if(ANN){b.textContent='📢 '+ANN;b.style.display='block'}else b.style.display='none'}
+function saveAnnouncement(){act('ann',{text:$('announceInput').value.trim()},'تم النشر')}
+function clearAnnouncement(){act('ann',{text:''},'تم الحذف')}
+async function checkLogin(){
+  const p=$('adminPassword').value;if(!p)return;PASS=p;
+  try{const j=await api('login');ME=j.name;OWNER=!!j.owner;isAdmin=true;$('adminHello').textContent='👤 '+ME+(OWNER?' • مالك':' • أدمن');document.querySelectorAll('.owner-only').forEach(e=>e.style.display=OWNER?'':'none');$('adminPassword').value='';$('adminBtn').style.display='none';$('logoutBtn').style.display='block';showSection('adminDashboard');toast('أهلاً '+ME+' 👋')}
+  catch(e){PASS='';toast(e.message||'خطأ',1)}
+}
+function logoutAdmin(){isAdmin=false;PASS='';ME='';OWNER=false;$('adminBtn').style.display='block';$('logoutBtn').style.display='none';goHome()}
+async function saveMaterial(){
+  const link=safeUrl($('addLink').value.trim());
+  const item={track:$('addTrack').value,dept:$('addDept').value,level:$('addLevel').value,semester:$('addSemester').value,subject:$('addSubject').value.trim(),week:$('addWeek').value,type:$('addType').value,title:$('addTitle').value.trim(),viewLink:link,downloadLink:getDL(link),deadline:$('addDeadline').value,tags:$('addTags').value.trim(),doctor:$('addDoctor').value.trim(),publishAt:$('addPub').value?String(new Date($('addPub').value).getTime()):''};
+  if(!item.subject||!item.title)return toast('أكمل الحقول!',1);
+  if(!link)return toast('الرابط لازم يبدأ بـ https://',1);
+  if(await act('add',{item},'تم النشر!'))['addSubject','addTitle','addLink','addDeadline','addTags','addPub'].forEach(i=>$(i).value='');
+}
+function deleteMat(id){if(confirm('حذف؟'))act('del',{id},'مُسح')}
+function clearAllData(){if(confirm('تصفير كلي؟ (اعمل نسخة احتياطية الأول)'))act('clear',{},'تم')}
+async function submitEdit(){
+  const id=$('editId').value,t=$('editTitle').value.trim(),sb=$('editSubject').value.trim(),l=safeUrl($('editLink').value.trim());
+  if(!t||!sb||!l)return toast('تأكد من الحقول والرابط',1);
+  if(await act('edit',{id,fields:{title:t,subject:sb,viewLink:l,downloadLink:getDL(l),week:$('editWeek').value,type:$('editType').value,track:$('editTrack').value,dept:$('editDept').value,level:$('editLevel').value,semester:$('editSem').value,tags:$('editTags').value.trim(),doctor:$('editDoctor').value.trim()}},'عُدل'))closeModal('editModal');
+}
+function reportLink(id){act('report',{id},'تم الإبلاغ ⚠')}
+$('importFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.db))throw 0;act('import',{items:j.db},'تم الاسترجاع')}catch(x){toast('ملف غير صالح',1)}};
+  r.readAsText(f);e.target.value='';
+});
+$('reportsList').addEventListener('click',e=>{const b=e.target.closest('[data-rid]');if(b)act('unreport',{id:b.dataset.rid})});
+$('cards').addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const a=el.dataset.act,id=el.dataset.id,s=el.dataset.s;
+  if(a==='view'||a==='dl'){api('bump',{id,f:a==='dl'?'downloads':'views'}).catch(()=>{});return}
+  if(a==='tog'){openSubs.has(s)?openSubs.delete(s):openSubs.add(s);return render()}
+  if(a==='sharesub'){e.stopPropagation();return shareSub(s)}
+  if(a==='fav'){e.stopPropagation();toggleIn(favs,s,'sci_favs');return render()}
+  if(a==='done'){toggleIn(done,id,'sci_done');return render()}
+  if(a==='note')return openNote(id);
+  if(a==='read')return openReader(id);
+  if(a==='tag'){$('searchBox').value=s;Q=norm(s);return render()}
+  if(a==='rep')return reportLink(id);
+  if(a==='like'){const on=toggleIn(liked,id,'sci_liked');render();return act('like',{id,d:on?1:-1})}
+  if(a==='share'){
+    const m=getDB().find(x=>x.id===id);if(!m)return;
+    if(navigator.share)navigator.share({title:m.title,text:m.subject+' - '+m.title,url:m.viewLink}).catch(()=>{});else copyText(m.viewLink);return;
+  }
+  if(a==='cmt'){
+    const t=$('cm-'+id).value.trim(),n=$('cn-'+id).value.trim()||'طالب';if(!t)return;
+    sv('sci_name',n==='طالب'?'':n);$('cm-'+id).value='';return act('comment',{id,n,t});
+  }
+  if(isAdmin){
+    if(a==='copy')return openCopy(id);
+    if(a==='edit')return openEdit(id);
+    if(a==='del')return deleteMat(id);
+    if(a==='delc')return act('delc',{id,i:+el.dataset.i});
+  }
+});
+
+/* ===== الإشعارات ===== */
+function renderNotif(){
+  const seen=ld('sci_seen',0),items=getDB().filter(i=>!i.publishAt||+i.publishAt<=Date.now()).sort((a,b)=>b.timestamp-a.timestamp).slice(0,5);
+  $('notifDot').style.display=items.some(i=>i.timestamp>seen)?'block':'none';
+  $('notifList').innerHTML=items.length?items.map(i=>`<div class="notif-item">${i.timestamp>seen?'🆕 ':''}${esc(i.title)} <small>(${esc(i.subject)})</small></div>`).join(''):'لا جديد.';
+}
+function toggleNotif(){
+  const d=$('notifDropdown');if(d.style.display==='block')return closeNotif();
+  d.style.top=($('siteHeader').getBoundingClientRect().bottom+8)+'px';d.style.display='block';
+  sv('sci_seen',Date.now());$('notifDot').style.display='none';
+}
+function closeNotif(){const d=$('notifDropdown');if(d.style.display==='block'){d.style.display='none';renderNotif()}}
+document.addEventListener('click',e=>{if(!e.target.closest('#notifDropdown,#notifBtn'))closeNotif()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNotif()});
+
+/* ===== أدوات ===== */
+const norm=t=>String(t||'').toLowerCase().replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+function tool(h){$('toolBody').innerHTML=h+'<button class="btn btn-danger" style="width:100%;margin-top:12px" onclick="closeModal(\'toolModal\')">إغلاق</button>';$('toolModal').style.display='flex'}
+function openMenu(){tool(`<h3>☰ المزيد</h3><div class="menu">${[['📅','المواعيد المهمة','openEvents()'],['🗓','جدول المحاضرات','openSched()'],['💬','طلب مادة / اقتراح','openReq()'],['📊','حاسبة الدرجات','openGrade()'],['📲','تثبيت التطبيق','openInstall()']].concat(isAdmin?[['📈','إحصائيات الموقع','openDash()'],['🧾','سجل النشاط','openLog()'],['🛠','إدارة الجدول','openManage()']]:[]).map(x=>`<button class="menu-btn" onclick="${x[2]}"><span>${x[0]}</span>${x[1]}</button>`).join('')}</div>`)}
+$('toolBody').addEventListener('click',e=>{
+  const ev=e.target.closest('[data-ev]'),rq=e.target.closest('[data-rq]'),cd=e.target.closest('[data-cd]');
+  if(ev&&confirm('حذف الموعد؟'))act('evdel',{id:ev.dataset.ev}).then(ok=>ok&&openEvents());
+  if(rq&&confirm('حذف؟'))api('reqdel',{id:rq.dataset.rq}).then(()=>openReqList()).catch(x=>toast(x.message,1));
+  if(cd&&confirm('حذف؟'))act('coldel',{col:'schedule',id:cd.dataset.cd}).then(ok=>ok&&openManage());
+});
+/* المواعيد */
+const evDays=d=>Math.ceil((new Date(d+'T23:59:59')-new Date())/864e5);
+function evBadge(d){const k=evDays(d);return k<0?'<span class="countdown-badge">انتهى</span>':`<span class="countdown-badge${k<=3?' urgent':''}">${k<=1?'آخر يوم':k+' يوم'}</span>`}
+function evBanner(){
+  const a=EVENTS.filter(e=>{const k=evDays(e.date);return k>=0&&k<=7}).sort((x,y)=>x.date.localeCompare(y.date));
+  return a.length?`<div class="upcoming" style="border-color:var(--accent-color);background:rgba(244,185,66,.12)"><strong>📅 مواعيد قريبة:</strong>${a.map(e=>`<div>• ${esc(e.title)} ${e.subject?'('+esc(e.subject)+')':''} ${evBadge(e.date)}</div>`).join('')}</div>`:'';
+}
+function openEvents(){
+  const a=EVENTS.filter(e=>evDays(e.date)>=-14).sort((x,y)=>x.date.localeCompare(y.date));
+  tool(`<h3>📅 المواعيد المهمة</h3>${a.length?a.map(e=>`<div class="ev"><div><b>${esc(e.title)}</b><br><small>${esc(e.subject||'')} • ${esc(e.date)}</small></div><div>${evBadge(e.date)}${isAdmin?` <button class="btn btn-danger sm" data-ev="${esc(e.id)}">🗑️</button>`:''}</div></div>`).join(''):'<p>لا توجد مواعيد حالياً.</p>'}${isAdmin?`<hr><input id="evT" class="form-input" placeholder="العنوان (ميدتيرم، تسليم...)"><input id="evS" class="form-input" style="margin-top:8px" placeholder="المادة"><input id="evD" type="date" class="form-input" style="margin-top:8px"><button class="btn" style="width:100%;margin-top:8px" onclick="addEvent()">➕ إضافة موعد</button>`:''}`);
+}
+function addEvent(){
+  const title=$('evT').value.trim(),date=$('evD').value,subject=$('evS').value.trim();
+  if(!title||!date)return toast('اكتب العنوان والتاريخ',1);
+  act('evadd',{title,date,subject},'تمت الإضافة').then(ok=>ok&&openEvents());
+}
+/* الطلبات */
+function openReq(){tool(`<h3>💬 طلب مادة / اقتراح</h3><select id="rqT" class="form-select"><option>طلب مادة</option><option>اقتراح</option><option>شكوى</option></select><input id="rqN" class="form-input" style="margin-top:8px" placeholder="اسمك (اختياري)" maxlength="30"><textarea id="rqX" class="form-input" style="margin-top:8px;min-height:90px" maxlength="500" placeholder="اكتب طلبك أو اقتراحك..."></textarea><button class="btn" style="width:100%;margin-top:8px" onclick="sendReq()">إرسال</button>${isAdmin?'<hr><button class="btn btn-warning" style="width:100%" onclick="openReqList()">📥 عرض الطلبات (للأدمن)</button>':''}`)}
+async function sendReq(){
+  const text=$('rqX').value.trim();if(!text)return toast('اكتب الرسالة',1);
+  try{await api('request',{type:$('rqT').value,name:$('rqN').value.trim(),text});toast('وصلت للإدارة، شكراً 🙏');closeModal('toolModal')}catch(e){toast(e.message||'خطأ',1)}
+}
+async function openReqList(){
+  try{const j=await api('reqlist');tool(`<h3>📥 الطلبات</h3>${j.requests.length?j.requests.map(r=>`<div class="ev"><div><b>${esc(r.type)}</b> <small>${esc(r.name||'مجهول')} • ${esc(r.date)}</small><br>${esc(r.text)}</div><button class="btn btn-danger sm" data-rq="${esc(r.id)}">🗑️</button></div>`).join(''):'<p>لا توجد طلبات.</p>'}`)}catch(e){toast(e.message||'خطأ',1)}
+}
+/* حاسبة الدرجات */
+function openGrade(){tool(`<h3>📊 حاسبة الدرجات</h3><div class="form-group"><label>درجة الأعمال/الميدتيرم اللي جبتها</label><input id="gM" type="number" class="form-input" min="0"></div><div class="form-group"><label>الدرجة الكاملة للأعمال</label><input id="gMM" type="number" class="form-input" value="40"></div><div class="form-group"><label>الدرجة الكاملة للفاينال</label><input id="gF" type="number" class="form-input" value="60"></div><div class="form-group"><label>النسبة المطلوبة من المادة</label><select id="gT" class="form-select">${[50,60,65,70,75,80,85,90].map(x=>`<option value="${x}">${x}%</option>`).join('')}</select></div><button class="btn btn-warning" style="width:100%" onclick="calcGrade()">احسب</button><div id="gR" style="margin-top:12px;font-weight:bold;text-align:center"></div>`)}
+function calcGrade(){
+  const m=+$('gM').value,mm=+$('gMM').value,f=+$('gF').value,t=+$('gT').value,r=$('gR');
+  if(!(mm>0&&f>0&&m>=0&&m<=mm)){r.textContent='راجع الأرقام!';r.style.color='red';return}
+  const need=t/100*(mm+f)-m;r.style.color='';
+  r.innerHTML=need<=0?'🎉 حققت النسبة دي بالفعل من غير الفاينال':need>f?`😔 مستحيل توصل ${t}% (محتاج ${need.toFixed(1)} من ${f})`:`محتاج <b>${need.toFixed(1)}</b> من ${f} في الفاينال (${(need/f*100).toFixed(0)}%)`;
+}
+/* تثبيت التطبيق */
+let deferredInstall=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e});
+function openInstall(){
+  if(deferredInstall){closeModal('toolModal');deferredInstall.prompt();deferredInstall=null;return}
+  tool('<h3>📲 تثبيت التطبيق</h3><p><b>أندرويد (Chrome):</b> القائمة ⋮ ثم "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".</p><p><b>آيفون (Safari):</b> زرار المشاركة ⬆️ ثم "إضافة إلى الشاشة الرئيسية".</p>');
+}
+/* عارض الملفات */
+function readerUrl(l){
+  let m=l.match(/drive\.google\.com\/file\/d\/([\w-]+)/)||l.match(/drive\.google\.com\/open\?id=([\w-]+)/);
+  if(m)return 'https://drive.google.com/file/d/'+m[1]+'/preview';
+  m=l.match(/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([\w-]+)/);
+  if(m)return 'https://docs.google.com/'+m[1]+'/d/'+m[2]+'/preview';
+  m=l.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
+  return m?'https://www.youtube.com/embed/'+m[1]:'';
+}
+function openReader(id){
+  const m=getDB().find(x=>x.id===id);if(!m)return;const u=readerUrl(m.viewLink);
+  if(!u){window.open(m.viewLink,'_blank','noopener');return}
+  api('bump',{id,f:'views'}).catch(()=>{});
+  $('rdT').textContent=m.title;$('rdF').src=u;$('readModal').style.display='flex';
+}
+function closeReader(){$('rdF').src='about:blank';$('readModal').style.display='none'}
+/* جدول المحاضرات */
+const DAYS=['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
+function openSched(){
+  const p=userPath,td=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][new Date().getDay()];
+  const a=SCHED.filter(x=>(!p.track||x.track===p.track)&&(!p.level||x.level===p.level)&&(!p.dept||x.dept===p.dept||x.dept==='مشترك'));
+  tool(`<h3>🗓 جدول المحاضرات</h3>${a.length?DAYS.filter(d=>a.some(x=>x.day===d)).map(d=>`<h4 style="margin:10px 0 4px;${d===td?'color:var(--accent-color)':''}">${d}${d===td?' (النهاردة)':''}</h4>`+a.filter(x=>x.day===d).sort((x,y)=>x.time.localeCompare(y.time)).map(x=>`<div class="ev"><div><b>${esc(x.subject)}</b><br><small>${esc(x.place)}</small></div><b>${esc(x.time)}</b></div>`).join('')).join(''):'<p>مفيش جدول لمسارك لسه. اختار مسارك من الرئيسية الأول.</p>'}`);
+}
+/* مشاركة مادة برابط مباشر */
+function shareSub(sub){
+  const p=userPath,u=location.origin+location.pathname+'#go='+encodeURIComponent([p.track,p.dept,p.level,p.semester,sub].join('|'));
+  if(navigator.share)navigator.share({title:sub,text:'مادة '+sub+' على SCI-Materials',url:u}).catch(()=>{});else copyText(u);
+}
+function applyHash(){
+  const m=location.hash.match(/^#go=(.+)$/);if(!m)return;let a=[];try{a=decodeURIComponent(m[1]).split('|')}catch(e){}
+  if(a.length<5)return;
+  userPath={track:a[0],dept:a[1],level:a[2]};openSubs.add(a.slice(4).join('|'));showSection('studentFlow');showResults(a[3]);history.replaceState(null,'',location.pathname);
+}
+/* أدوات الأدمن */
+const itemRow=m=>`<div class="ev"><div><b>${esc(m.title)}</b><br><small>${esc(m.subject)} • ⬇${m.downloads||0} 👁${m.views||0}</small></div><a class="btn sm" href="${esc(m.viewLink)}" target="_blank" rel="noopener noreferrer">عرض</a></div>`;
+function openDash(){
+  const db=getDB(),sum=f=>db.reduce((a,i)=>a+(i[f]||0),0),by={};
+  db.forEach(i=>{const o=by[i.subject]=by[i.subject]||{n:0,u:0};o.n++;o.u+=(i.views||0)+(i.downloads||0)});
+  const top=db.slice().sort((a,b)=>((b.views||0)+(b.downloads||0))-((a.views||0)+(a.downloads||0))).slice(0,6);
+  tool(`<h3>📈 إحصائيات الموقع</h3><div class="stats-container"><div class="stat-box"><div class="stat-num">${db.length}</div>ملف</div><div class="stat-box"><div class="stat-num">${sum('views')}</div>مشاهدة</div><div class="stat-box"><div class="stat-num">${sum('downloads')}</div>تحميل</div><div class="stat-box"><div class="stat-num">${sum('likes')}</div>إعجاب</div></div><h4>أكتر المواد استخداماً</h4>${Object.keys(by).sort((a,b)=>by[b].u-by[a].u).slice(0,6).map(k=>`<div class="ev"><span>${esc(k)}</span><span>${by[k].u} استخدام • ${by[k].n} ملف</span></div>`).join('')}<h4>أكتر الملفات</h4>${top.map(itemRow).join('')}`);
+}
+async function openLog(){
+  try{const j=await api('loglist');tool(`<h3>🧾 سجل النشاط</h3>${j.log.length?j.log.map(l=>`<div class="ev"><div><b>${esc(l.a)}</b> <small>${esc(l.d)}</small><br><small>${esc(l.n)} • ${esc(l.t)}</small></div></div>`).join(''):'<p>لا يوجد نشاط.</p>'}`)}catch(e){toast(e.message||'خطأ',1)}
+}
+function openManage(){
+  tool(`<h3>🛠 إدارة الجدول</h3><div class="form-grid"><select id="sT" class="form-select"><option>عام</option><option>خاص</option></select><select id="sD" class="form-select">${['مشترك'].concat(DEPTS).map(x=>`<option>${x}</option>`).join('')}</select><select id="sL" class="form-select">${LEVELS.map(x=>`<option>${x}</option>`).join('')}</select><select id="sDay" class="form-select">${DAYS.map(x=>`<option>${x}</option>`).join('')}</select><input id="sTm" class="form-input" placeholder="الوقت 10:00 - 12:00"><input id="sS" class="form-input" placeholder="المادة"><input id="sP" class="form-input" placeholder="المكان (قاعة 3)"></div><button class="btn" style="width:100%;margin-top:6px" onclick="addS()">➕ إضافة للجدول</button><hr><h4>الجدول (${SCHED.length})</h4>${SCHED.slice(-25).map(x=>`<div class="ev"><div><small>${esc(x.level)} • ${esc(x.day)}</small> ${esc(x.subject)}</div><button class="btn btn-danger sm" data-cd="${esc(x.id)}">🗑️</button></div>`).join('')}`);
+}
+function addS(){
+  const f={track:$('sT').value,dept:$('sD').value,level:$('sL').value,day:$('sDay').value,time:$('sTm').value.trim(),subject:$('sS').value.trim(),place:$('sP').value.trim()};
+  if(!f.subject||!f.time)return toast('اكتب المادة والوقت',1);
+  act('coladd',{col:'schedule',f},'تمت الإضافة').then(ok=>ok&&openManage());
+}
+async function saveBulk(){
+  const base={track:$('addTrack').value,dept:$('addDept').value,level:$('addLevel').value,semester:$('addSemester').value,subject:$('addSubject').value.trim(),week:$('addWeek').value,type:$('addType').value,deadline:$('addDeadline').value,tags:$('addTags').value.trim(),doctor:$('addDoctor').value.trim(),publishAt:$('addPub').value?String(new Date($('addPub').value).getTime()):''};
+  if(!base.subject)return toast('اكتب اسم المادة في الفورم اللي فوق',1);
+  let bad=0;const items=[];
+  $('addBulk').value.split('\n').forEach(l=>{
+    l=l.trim();if(!l)return;const i=l.indexOf('|'),t=i>0?l.slice(0,i).trim():'',u=safeUrl(i>0?l.slice(i+1).trim():'');
+    if(!t||!u){bad++;return}items.push(Object.assign({},base,{title:t,viewLink:u,downloadLink:getDL(u)}));
+  });
+  if(!items.length)return toast('مفيش سطور صحيحة (العنوان | الرابط)',1);
+  if(items.length>40)return toast('الحد الأقصى 40 ملف في المرة',1);
+  if(await act('addmany',{items},'تم نشر '+items.length+' ملف'+(bad?' (وتخطيت '+bad+' سطر غلط)':'')))$('addBulk').value='';
+}
+function openCopy(id){
+  const m=getDB().find(x=>x.id===id);if(!m)return;
+  tool(`<h3>📋 نسخ الملف لمسار تاني</h3><small>${esc(m.title)}</small><div class="form-group" style="margin-top:8px"><label>النظام</label><select id="cpT" class="form-select">${opts(['عام','خاص'],m.track)}</select></div><div class="form-group"><label>القسم</label><select id="cpD" class="form-select">${opts(['مشترك'].concat(DEPTS),m.dept)}</select></div><div class="form-group"><label>الفرقة</label><select id="cpL" class="form-select">${opts(LEVELS,m.level)}</select></div><div class="form-group"><label>الفصل</label><select id="cpS" class="form-select">${opts(['الفصل الأول','الفصل الثاني'],m.semester)}</select></div><button class="btn" style="width:100%" onclick="doCopy('${m.id}')">نسخ</button>`);
+}
+function doCopy(id){
+  const m=getDB().find(x=>x.id===id);if(!m)return;
+  const it=Object.assign({},m,{track:$('cpT').value,dept:$('cpD').value,level:$('cpL').value,semester:$('cpS').value});
+  if(it.track===m.track&&it.dept===m.dept&&it.level===m.level&&it.semester===m.semester)return toast('اختار مسار مختلف',1);
+  act('addmany',{items:[it]},'تم النسخ ✅').then(ok=>ok&&closeModal('toolModal'));
+}
+/* ===== لوحة الأدمن: التبويبات وإدارة الملفات ===== */
+const AF={q:'',s:'',n:50,k:''};
+function adminTab(t){
+  document.querySelectorAll('.apanel').forEach(x=>x.hidden=x.id!=='ap-'+t);
+  document.querySelectorAll('.atab').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  if(t==='home'){updateStats();renderReports()}
+  if(t==='files')renderAdminFiles();
+}
+function renderAdminFiles(){
+  const db=getDB().slice().sort((a,b)=>b.timestamp-a.timestamp),q=norm(AF.q);
+  const subs=Array.from(new Set(db.map(i=>i.subject))).sort((a,b)=>a.localeCompare(b,'ar'));
+  if(AF.k!==subs.join('|')){AF.k=subs.join('|');if(AF.s&&subs.indexOf(AF.s)<0)AF.s='';$('afSub').innerHTML='<option value="">كل المواد</option>'+opts(subs,AF.s)}
+  const all=db.filter(i=>(!AF.s||i.subject===AF.s)&&(!q||norm(i.title+' '+i.subject+' '+(i.tags||'')+' '+(i.doctor||'')).includes(q)));
+  const l=all.slice(0,AF.n);
+  $('afCount').textContent=all.length+' ملف';
+  $('afList').innerHTML=l.length?l.map(m=>{
+    const can=OWNER||m.by===ME,sch=m.publishAt&&+m.publishAt>Date.now();
+    return `<div class="frow"><div class="finfo"><b>${esc(m.title)}</b>${sch?' <span class="countdown-badge">⏳ مجدول</span>':''}<br><small>${esc(m.subject)} • ${esc(m.type)} • ${esc(m.level)} • ${esc(m.dept)} • ${esc(m.semester)}</small><br><small>${esc(m.week||'عام')} • 👁${m.views||0} ⬇${m.downloads||0} 👍${m.likes||0}${m.by?' • ✍ '+esc(m.by):''}</small></div><div class="action-links"><a class="open-btn" href="${esc(m.viewLink)}" target="_blank" rel="noopener noreferrer">فتح</a>${can?`<button class="edit-btn" onclick="openCopy('${m.id}')" aria-label="نسخ">📋</button><button class="edit-btn" onclick="openEdit('${m.id}')" aria-label="تعديل">✏️</button><button class="delete-btn" onclick="deleteMat('${m.id}')" aria-label="حذف">🗑️</button>`:''}</div></div>`;
+  }).join(''):'<p style="text-align:center">لا توجد ملفات.</p>';
+  $('afMore').style.display=all.length>AF.n?'block':'none';
+}
+$('afSearch').addEventListener('input',e=>{AF.q=e.target.value.trim();AF.n=50;renderAdminFiles()});
+$('afSub').addEventListener('change',e=>{AF.s=e.target.value;AF.n=50;renderAdminFiles()});
+$('afMore').addEventListener('click',()=>{AF.n+=50;renderAdminFiles()});
+/* القوائم والخلفية */
+$('typeFilter').innerHTML='<option value="">كل الأنواع</option>'+opts(TYPES);
+$('typeFilter').addEventListener('change',e=>{TF=e.target.value;render()});
+$('editType').innerHTML=opts(TYPES);$('editTrack').innerHTML=opts(['عام','خاص']);$('editDept').innerHTML=opts(['مشترك'].concat(DEPTS));$('editLevel').innerHTML=opts(LEVELS);$('editSem').innerHTML=opts(['الفصل الأول','الفصل الثاني']);
+(function(){
+  const b=$('bg');
+  ['H₂O','π','∑','E=mc²','DNA','∞','Δ','⚛'].forEach((t,i)=>{
+    const e=document.createElement('span');e.className='sym';e.textContent=t;
+    e.style.cssText=`left:${(i*12+Math.random()*6)%94}%;font-size:${16+Math.random()*20}px;animation-duration:${26+Math.random()*24}s;animation-delay:-${Math.random()*40}s`;
+    b.appendChild(e);
+  });
+})();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+window.addEventListener('load',()=>{
+  setTimeout(()=>{$('splashScreen').style.opacity=0;setTimeout(()=>$('splashScreen').remove(),500)},800);
+  loadAnnouncement();goHome();applyHash();if(!ld('sci_seen',0))sv('sci_seen',Date.now());renderNotif();refresh();
+});
+</script>
+</body>
+</html>
