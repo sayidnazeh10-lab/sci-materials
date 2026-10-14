@@ -207,7 +207,7 @@ body.dark-mode .tag{color:#fff}
   <section id="deptStep" class="drawer-label student-step" hidden>
     <div class="chosen-level-bar"><span>النظام: <strong id="lblDept"></strong></span><button class="btn" onclick="resetTo('trackStep')">تغيير</button></div>
     <h2>اختار القسم / البرنامج</h2>
-    <p style="font-size:12px;color:#888">اختار قسمك. المواد المشتركة بين الأقسام بتظهر لكل الطلاب.</p>
+    <p style="font-size:12px;color:#888">اختار قسمك، أو «المواد المشتركة فقط» لو لسه مختارتش.</p>
     <div id="deptBtns" class="level-picker"></div>
   </section>
   <section id="levelStep" class="drawer-label student-step" hidden>
@@ -282,6 +282,7 @@ body.dark-mode .tag{color:#fff}
   <div id="ap-add" class="apanel" hidden>
     <div class="acard">
       <h4>1) المسار</h4>
+      <p id="pathHint" style="font-size:12px;margin:0 0 8px"></p>
       <div class="form-grid">
         <select id="addTrack" class="form-select"><option value="عام">الأقسام العامة</option><option value="خاص">البرامج الخاصة</option></select>
         <select id="addDept" class="form-select"></select>
@@ -375,8 +376,10 @@ body.dark-mode .tag{color:#fff}
 const DEPT_GEN=['الرياضيات','الإحصاء','علوم الكمبيوتر','الفيزياء','الكيمياء','الجيولوجيا','الجيوفيزياء','علم النبات','الأحياء الدقيقة','علم الحيوان','علم الحشرات','علم مصائد الأسماك'];
 const DEPT_SPC=['جيولوجيا البترول','بيوتكنولوجيا النبات والميكروبيولوجي','الكيمياء الصناعية التطبيقية','علوم المواد والنانوتكنولوجي','الفيزياء الإشعاعية الطبية'];
 const DEPTS=DEPT_GEN.concat(DEPT_SPC);
+const COMMON_LEVELS=['الفرقة الأولى']; // الفرق اللي دراستها موحّدة قبل اختيار القسم (في الأقسام العامة)
+const trackLabel=t=>t==='خاص'?'البرامج الخاصة':'الأقسام العامة';
 const deptsOf=t=>t==='خاص'?DEPT_SPC:DEPT_GEN;
-const deptBtnsHtml=t=>deptsOf(t).map(d=>`<button class="btn" data-k="dept" data-v="${esc(d)}" data-n="levelStep">${esc(d)}</button>`).join('');
+const deptBtnsHtml=t=>(t==='خاص'?'':'<button class="btn" data-k="dept" data-v="مشترك" data-n="semesterStep">📚 المواد المشتركة فقط</button>')+deptsOf(t).map(d=>`<button class="btn" data-k="dept" data-v="${esc(d)}" data-n="levelStep">${esc(d)}</button>`).join('');
 const LEVELS=['الفرقة الأولى','الفرقة الثانية','الفرقة الثالثة','الفرقة الرابعة'];
 const TYPES=['محاضرات','سكاشن','ملخصات','امتحانات سابقة','تكليفات'];
 const WEEKS=['عام',...Array.from({length:16},(_,i)=>'الأسبوع '+(i+1)),'ميدتيرم','فاينال'];
@@ -418,7 +421,11 @@ $('themeToggleBtn').onclick=()=>{bodyEl.classList.toggle('dark-mode');const d=bo
 $('deptBtns').innerHTML=deptBtnsHtml('عام');
 $('levelBtns').innerHTML=LEVELS.map(l=>`<button class="btn" data-k="level" data-v="${esc(l)}" data-n="semesterStep">${esc(l)}</button>`).join('');
 function fillAddDept(){$('addDept').innerHTML=opts(['مشترك'].concat(deptsOf($('addTrack').value)))}
-fillAddDept();$('addTrack').addEventListener('change',fillAddDept);
+function autoDept(){if($('addTrack').value==='عام'&&COMMON_LEVELS.indexOf($('addLevel').value)>-1)$('addDept').value='مشترك'}
+fillAddDept();
+$('addTrack').addEventListener('change',()=>{fillAddDept();autoDept()});
+$('addLevel').addEventListener('change',autoDept);
+$('pathHint').textContent='الأقسام العامة: '+COMMON_LEVELS.join('، ')+' دراستها موحّدة لكل الطلاب (اختار «مشترك»)، وبعدها الطالب بيختار قسمه. البرامج الخاصة: اختار البرنامج.';
 $('addLevel').innerHTML=opts(LEVELS);
 $('addWeek').innerHTML=opts(WEEKS);$('editWeek').innerHTML=opts(WEEKS);
 $('addType').innerHTML=opts(TYPES);
@@ -439,18 +446,26 @@ function goStep(n){document.querySelectorAll('.student-step').forEach(s=>s.hidde
 function resetTo(n){if(n==='trackStep')userPath={};goStep(n)}
 function showResults(sem){
   userPath.semester=sem;sv('sci_path',userPath);goStep('resultsStep');
-  $('chosenResultsLabel').textContent=`${userPath.track} - ${userPath.dept} > ${userPath.level} > ${sem}`;render();
+  $('chosenResultsLabel').textContent=[trackLabel(userPath.track),userPath.dept&&userPath.dept!=='مشترك'?userPath.dept:'',userPath.level,sem].filter(Boolean).join(' > ');render();
 }
 $('studentFlow').addEventListener('click',e=>{
   const b=e.target.closest('.btn[data-k]');if(!b)return;
-  const k=b.dataset.k,v=b.dataset.v;
+  const k=b.dataset.k,v=b.dataset.v,gen=()=>userPath.track==='عام';
   if(k==='semester')return showResults(v);
   userPath[k]=v;
-  if(k==='track')$('deptBtns').innerHTML=deptBtnsHtml(v);
-  $('lblDept').textContent=userPath.track||'';
-  $('lblLevel').textContent=[userPath.track,userPath.dept].filter(Boolean).join(' - ');
-  $('lblSem').textContent=[userPath.track,userPath.dept,userPath.level].filter(Boolean).join(' - ');
-  goStep(b.dataset.n);
+  if(k==='track'){
+    delete userPath.dept;delete userPath.level;delete userPath.semester;
+    if(v==='عام')goStep('levelStep');else{$('deptBtns').innerHTML=deptBtnsHtml('خاص');goStep('deptStep')}
+  }else if(k==='dept'){
+    goStep(gen()?'semesterStep':'levelStep');
+  }else if(k==='level'){
+    if(gen()&&COMMON_LEVELS.indexOf(v)<0){$('deptBtns').innerHTML=deptBtnsHtml('عام');goStep('deptStep')}
+    else{if(gen())userPath.dept='مشترك';goStep('semesterStep')}
+  }
+  const dn=userPath.dept&&userPath.dept!=='مشترك'?userPath.dept:'';
+  $('lblDept').textContent=[trackLabel(userPath.track),userPath.level].filter(Boolean).join(' - ');
+  $('lblLevel').textContent=[trackLabel(userPath.track),dn].filter(Boolean).join(' - ');
+  $('lblSem').textContent=[trackLabel(userPath.track),dn,userPath.level].filter(Boolean).join(' - ');
 });
 function showSection(id){
   ['studentFlow','adminLogin','adminDashboard'].forEach(i=>$(i).hidden=true);$(id).hidden=false;
@@ -497,8 +512,8 @@ $('weekFilter').addEventListener('change',e=>{W=e.target.value;render()});
 
 function render(){
   const saved={};document.querySelectorAll('#cards input').forEach(i=>saved[i.id]=i.value);
-  const p=userPath,notes=ld('sci_notes',{});
-  const all=getDB().filter(i=>i.track===p.track&&i.level===p.level&&i.semester===p.semester&&(i.dept===p.dept||i.dept==='مشترك')&&(isAdmin||!i.publishAt||+i.publishAt<=Date.now()));
+  const p=userPath,unified=p.track==='عام'&&p.dept==='مشترك'&&COMMON_LEVELS.indexOf(p.level)>-1,notes=ld('sci_notes',{});
+  const all=getDB().filter(i=>i.track===p.track&&i.level===p.level&&i.semester===p.semester&&(i.dept===p.dept||i.dept==='مشترك'||unified)&&(isAdmin||!i.publishAt||+i.publishAt<=Date.now()));
   const soon=all.filter(i=>{if(i.type!=='تكليفات'||!i.deadline||done.includes(i.id))return false;const e=new Date(i.deadline+'T23:59:59'),n=new Date();return e>=n&&e-n<7*864e5});
   $('upcoming').innerHTML=evBanner()+(soon.length?`<div class="upcoming"><strong>⏰ تكليفات قريبة:</strong>${soon.map(i=>`<div>• ${esc(i.subject)} - ${esc(i.title)} ${dlBadge(i.deadline)}</div>`).join('')}</div>`:'');
   let db=all;
