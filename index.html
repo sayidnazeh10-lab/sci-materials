@@ -383,7 +383,7 @@ const deptBtnsHtml=t=>(t==='خاص'?'':'<button class="btn" data-k="dept" data-v
 const LEVELS=['الفرقة الأولى','الفرقة الثانية','الفرقة الثالثة','الفرقة الرابعة'];
 const TYPES=['محاضرات','سكاشن','ملخصات','امتحانات سابقة','تكليفات'];
 const WEEKS=['عام',...Array.from({length:16},(_,i)=>'الأسبوع '+(i+1)),'ميدتيرم','فاينال'];
-const GR=[['A+',4],['A-',3.7],['B+',3.3],['B',3],['B-',2.7],['C+',2.3],['C',2],['C-',1.7],['D+',1.3],['D',1],['F',0]];
+const GR=[['A (90–100)',4],['A- (85–90)',3.7],['B+ (80–85)',3.3],['B (75–80)',3],['B- (70–75)',2.7],['C+ (65–70)',2.3],['C (60–65)',2],['C- (57–60)',1.7],['D+ (55–57)',1.3],['D (50–55)',1],['F (أقل من 50)',0]];
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function ld(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}}
@@ -585,7 +585,9 @@ function calculateGPA(){
   let t=`معدل الترم: ${(P/H).toFixed(2)}`;
   const pg=parseFloat($('prevGpa').value),ph=parseFloat($('prevHrs').value);
   if(pg>=0&&ph>0)t+=`<br>التراكمي: ${((P+pg*ph)/(H+ph)).toFixed(2)}`;
-  r.innerHTML=t;r.style.color='var(--success-color)';
+  const g=(pg>=0&&ph>0)?(P+pg*ph)/(H+ph):P/H;
+  t+=g<2?'<br><small>⚠️ أقل من 2.0: ملاحظة/إنذار أكاديمي، لازم ترفعه</small>':g>=3?'<br><small>🏅 3.0 فأكثر: مؤهل لمرتبة الشرف (بشروطها)</small>':'';
+  r.innerHTML=t;r.style.color=g<2?'var(--danger-color)':'var(--success-color)';
 }
 
 /* ===== الاتصال بـ Google Sheets ===== */
